@@ -50,6 +50,22 @@ async function run() {
       res.send(result);
     });
 
+    // updateone
+    app.put('/transaction/update/:id', verifyToken, async (req, res) => {
+      const { id } = req.params;
+      const data = req.body;
+
+      const update = {
+        $set: data
+      };
+      const result = await trancollections.updateOne({ _id: new ObjectId(id) }, update);
+
+      res.send({
+        success: true,
+        result
+      });
+    });
+
 
     // DB Connection check
     await client.db('admin').command({ ping: 1 });
