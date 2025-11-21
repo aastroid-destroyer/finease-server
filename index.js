@@ -43,6 +43,13 @@ async function run() {
       res.send(result);
     });
 
+    // get
+    app.get('/transactions/:id', async (req, res) => {
+      const { id } = req.params;
+      const result = await trancollections.findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+
 
     // DB Connection check
     await client.db('admin').command({ ping: 1 });
