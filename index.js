@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-
+const admin = require("firebase-admin");
+const serviceAccount = require("./serviceKey.json");
 const app = express();
 const port = 3000;
 
@@ -22,6 +23,29 @@ const client = new MongoClient(uri, {
     deprecationErrors: true
   }
 });
+
+
+const verifyToken = async (req, res, next) => {
+  const authorization = req.headers.authorization;
+  // console.log("Kichu",authorization)
+
+  if (!authorization) {
+    return res.status(401).send({
+      message: "Unauthorized access -- Token is not found"
+    });
+  }
+
+  const token = authorization.split(' ')[1];
+
+  try {
+    await admin.auth().verifyIdToken(token);
+    next();
+  } catch (error) {
+    res.status(401).send({
+      message: "Unauthorized access"
+    });
+  }
+};
 
 
 
@@ -77,7 +101,7 @@ async function run() {
       });
     });
 
-        // delete
+    // delete
     app.delete('/transactions/:id', async (req, res) => {
       const { id } = req.params;
       const result = await trancollections.deleteOne({ _id: new ObjectId(id) });
