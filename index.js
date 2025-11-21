@@ -66,6 +66,17 @@ async function run() {
       });
     });
 
+    // add
+    app.post('/transaction', verifyToken, async (req, res) => {
+      const data = req.body;
+      const result = await trancollections.insertOne(data);
+
+      res.send({
+        success: true,
+        result
+      });
+    });
+
 
     // DB Connection check
     await client.db('admin').command({ ping: 1 });
