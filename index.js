@@ -77,6 +77,13 @@ async function run() {
       });
     });
 
+        // delete
+    app.delete('/transactions/:id', async (req, res) => {
+      const { id } = req.params;
+      const result = await trancollections.deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+
 
     // DB Connection check
     await client.db('admin').command({ ping: 1 });
